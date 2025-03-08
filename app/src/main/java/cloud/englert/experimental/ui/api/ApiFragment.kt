@@ -26,10 +26,15 @@ class ApiFragment : Fragment() {
         _binding = FragmentApiBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
+        val textView: TextView = binding.textJoke
         apiViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        binding.buttonFetch.setOnClickListener {
+            apiViewModel.update()
+        }
+
         return root
     }
 

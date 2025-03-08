@@ -6,6 +6,8 @@ Icons: https://pictogrammers.com/library/mdi/
 
 Retrofit
 
+Random Joke API: https://official-joke-api.appspot.com/random_joke
+
 ## Camera
 
 CameraX
