@@ -1,4 +1,4 @@
-package cloud.englert.experimental.ui.slideshow
+package cloud.englert.experimental.ui.camera
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +9,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 
-import cloud.englert.experimental.databinding.FragmentSlideshowBinding
+import cloud.englert.experimental.databinding.FragmentCameraBinding
 
-class SlideshowFragment : Fragment() {
-    private var _binding: FragmentSlideshowBinding? = null
+class CameraFragment : Fragment() {
+    private var _binding: FragmentCameraBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
@@ -21,13 +21,13 @@ class SlideshowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel = ViewModelProvider(this)[SlideshowViewModel::class.java]
+        val cameraViewModel = ViewModelProvider(this)[CameraViewModel::class.java]
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+        _binding = FragmentCameraBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textGallery
+        cameraViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

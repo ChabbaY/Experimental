@@ -1,10 +1,10 @@
-package cloud.englert.experimental.ui.slideshow
+package cloud.englert.experimental.ui.swipe
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class SwipeViewModel : ViewModel() {
     private val _text = MutableLiveData<String>().apply {
         value = "This is slideshow Fragment"
     }

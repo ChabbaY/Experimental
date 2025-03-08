@@ -4,20 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_api">
     <fragment
-        android:id="@+id/nav_home"
-        android:name="cloud.englert.experimental.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_api"
+        android:name="cloud.englert.experimental.ui.api.ApiFragment"
+        android:label="@string/menu_api"
+        tools:layout="@layout/fragment_api" />
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="cloud.englert.experimental.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_camera"
+        android:name="cloud.englert.experimental.ui.camera.CameraFragment"
+        android:label="@string/menu_camera"
+        tools:layout="@layout/fragment_camera" />
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="cloud.englert.experimental.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_swipe"
+        android:name="cloud.englert.experimental.ui.swipe.SwipeFragment"
+        android:label="@string/menu_swipe"
+        tools:layout="@layout/fragment_swipe" />
 </navigation>
