@@ -31,7 +31,7 @@ class GpsFragment : Fragment() {
         _binding = FragmentGpsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Request camera permissions
+        // Request location permissions
         if (allPermissionsGranted()) {
             getLocation()
         } else {
