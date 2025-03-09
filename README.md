@@ -16,6 +16,10 @@ using CameraX
 
 using Google Play Services
 
+## Spotify
+
+via Spotify App Remote SDK
+
 ## Swipe
 
 Custom made with RecyclerView & ItemTouchHelper

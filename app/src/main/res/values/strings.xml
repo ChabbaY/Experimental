@@ -11,6 +11,7 @@
     <string name="menu_api">API</string>
     <string name="menu_camera">Camera</string>
     <string name="menu_gps">GPS</string>
+    <string name="menu_spotify">Spotify</string>
     <string name="menu_swipe">Swipe</string>
     <string name="menu_wifi_direct">Wifi Direct</string>
     <string name="title_activity_settings">SettingsActivity</string>
@@ -39,4 +40,10 @@
 
     <!-- GPS -->
     <string name="location_name">no location retrieved yet</string>
+
+    <!-- Spotify -->
+    <string name="song_name">currently not playing</string>
+
+    <!-- Wifi Direct -->
+    <string name="wifi_direct_message">not implemented yet</string>
 </resources>
