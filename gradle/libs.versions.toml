@@ -15,6 +15,7 @@ navigationUiKtx = "2.8.8"
 preference = "1.2.1"
 retrofit = "2.11.0"
 camerax = "1.4.1"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +38,7 @@ camerax-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", vers
 camerax-video = { group = "androidx.camera", name = "camera-video", version.ref = "camerax" }
 camerax-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
 camerax-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "camerax" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

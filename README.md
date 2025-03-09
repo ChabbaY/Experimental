@@ -4,12 +4,22 @@ Icons: https://pictogrammers.com/library/mdi/
 
 ## API
 
-Retrofit
+using Retrofit
 
 Random Joke API: https://official-joke-api.appspot.com/random_joke
 
 ## Camera
 
-CameraX
+using CameraX
+
+## GPS
+
+using Google Play Services
 
 ## Swipe
+
+Custom made with RecyclerView & ItemTouchHelper
+
+## Wifi Direct
+
+TODO

@@ -16,8 +16,18 @@
         android:label="@string/menu_camera"
         tools:layout="@layout/fragment_camera" />
     <fragment
+        android:id="@+id/nav_gps"
+        android:name="cloud.englert.experimental.ui.gps.GpsFragment"
+        android:label="@string/menu_gps"
+        tools:layout="@layout/fragment_gps" />
+    <fragment
         android:id="@+id/nav_swipe"
         android:name="cloud.englert.experimental.ui.swipe.SwipeFragment"
         android:label="@string/menu_swipe"
         tools:layout="@layout/fragment_swipe" />
+    <fragment
+        android:id="@+id/nav_wifi_direct"
+        android:name="cloud.englert.experimental.ui.wifi_direct.WifiDirectFragment"
+        android:label="@string/menu_wifi_direct"
+        tools:layout="@layout/fragment_wifi_direct" />
 </navigation>

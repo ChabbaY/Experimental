@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.camerax.video)
     implementation(libs.camerax.view)
     implementation(libs.camerax.extensions)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
