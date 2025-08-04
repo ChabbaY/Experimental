@@ -1,10 +1,12 @@
 package cloud.englert.experimental.ui.api
 
 import android.util.Log
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import cloud.englert.experimental.api.JokeRetrofitInstance
 
 import kotlinx.coroutines.launch
@@ -30,6 +32,6 @@ class ApiViewModel : ViewModel() {
     }
 
     companion object {
-        private val TAG = ApiViewModel.javaClass.simpleName
+        private val TAG = ApiViewModel::class.java.simpleName
     }
 }

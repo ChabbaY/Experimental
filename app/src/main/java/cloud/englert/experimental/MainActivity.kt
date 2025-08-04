@@ -44,7 +44,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false)
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences,
+            false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -59,7 +60,8 @@ class MainActivity : AppCompatActivity() {
         val id = item.itemId
 
         if (id == R.id.action_settings) {
-            val intent = Intent(applicationContext, SettingsActivity::class.java)
+            val intent = Intent(applicationContext,
+                SettingsActivity::class.java)
             startActivity(intent)
             return true
         }

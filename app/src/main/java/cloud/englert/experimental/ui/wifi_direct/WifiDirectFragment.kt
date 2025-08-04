@@ -19,7 +19,8 @@ class WifiDirectFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentWifiDirectBinding.inflate(inflater, container, false)
+        _binding = FragmentWifiDirectBinding.inflate(inflater, container,
+            false)
         val root: View = binding.root
 
         return root

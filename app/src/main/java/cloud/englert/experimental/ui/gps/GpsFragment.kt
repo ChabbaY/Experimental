@@ -47,18 +47,20 @@ class GpsFragment : Fragment() {
     }
 
     private fun getLocation() {
-        var fusedLocationClient: FusedLocationProviderClient =
+        val fusedLocationClient: FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
 
         if (ContextCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.lastLocation.addOnSuccessListener {  location ->
                 if (location != null) {
-                    var latitude = location.latitude
-                    var longitude = location.longitude
-                    var locationString = "Location: (Lat: $latitude / Lon: $longitude)"
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    val locationString = "Location: (Lat: $latitude / Lon: $longitude)"
                     Log.d(TAG, locationString)
-                    Toast.makeText(requireContext(), locationString, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), locationString,
+                        Toast.LENGTH_SHORT).show()
                     binding.textLocation.text = locationString
                 }
             }
@@ -75,7 +77,7 @@ class GpsFragment : Fragment() {
             // Handle Permission granted/rejected
             var permissionGranted = true
             permissions.entries.forEach {
-                if (it.key in REQUIRED_PERMISSIONS && it.value == false)
+                if (it.key in REQUIRED_PERMISSIONS && !it.value)
                     permissionGranted = false
             }
             if (!permissionGranted) {

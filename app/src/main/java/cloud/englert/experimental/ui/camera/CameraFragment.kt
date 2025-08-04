@@ -122,7 +122,8 @@ class CameraFragment : Fragment() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val msg = "Image capture succeeded: ${output.savedUri}"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), msg,
+                        Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                 }
             }
@@ -154,18 +155,21 @@ class CameraFragment : Fragment() {
         }
 
         val mediaStoreOutputOptions = MediaStoreOutputOptions
-            .Builder(requireContext().contentResolver, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+            .Builder(requireContext().contentResolver,
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
             .setContentValues(contentValues)
             .build()
         recording = videoCapture.output
             .prepareRecording(requireContext(), mediaStoreOutputOptions)
             .apply {
                 if (PermissionChecker.checkSelfPermission(requireContext(),
-                        Manifest.permission.RECORD_AUDIO) == PermissionChecker.PERMISSION_GRANTED) {
+                        Manifest.permission.RECORD_AUDIO) ==
+                        PermissionChecker.PERMISSION_GRANTED) {
                     withAudioEnabled()
                 }
             }
-            .start(ContextCompat.getMainExecutor(requireContext())) { recordEvent ->
+            .start(ContextCompat
+                .getMainExecutor(requireContext())) { recordEvent ->
                 when(recordEvent) {
                     is VideoRecordEvent.Start -> {
                         binding.videoCaptureButton.apply {
@@ -177,12 +181,14 @@ class CameraFragment : Fragment() {
                         if (!recordEvent.hasError()) {
                             val msg = "Video capture succeeded: " +
                                     "${recordEvent.outputResults.outputUri}"
-                            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), msg,
+                                Toast.LENGTH_SHORT).show()
                             Log.d(TAG, msg)
                         } else {
                             recording?.close()
                             recording = null
-                            Log.e(TAG, "Video capture ends with error: ${recordEvent.error}")
+                            Log.e(TAG,
+                                "Video capture ends with error: ${recordEvent.error}")
                         }
                         binding.videoCaptureButton.apply {
                             text = getString(R.string.start_capture)
@@ -233,7 +239,8 @@ class CameraFragment : Fragment() {
                 // Bind use cases to camera (some devices may not support binding imageCapture
                 // and imageAnalyzer at the same time)
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture, imageAnalyzer, videoCapture)
+                    this, cameraSelector, preview, imageCapture,
+                    imageAnalyzer, videoCapture)
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
@@ -250,7 +257,7 @@ class CameraFragment : Fragment() {
             // Handle Permission granted/rejected
             var permissionGranted = true
             permissions.entries.forEach {
-                if (it.key in REQUIRED_PERMISSIONS && it.value == false)
+                if (it.key in REQUIRED_PERMISSIONS && !it.value)
                     permissionGranted = false
             }
             if (!permissionGranted) {
@@ -268,7 +275,7 @@ class CameraFragment : Fragment() {
     }
 
     companion object {
-        private val TAG = CameraFragment.javaClass.simpleName
+        private val TAG = CameraFragment::class.java.simpleName
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private val REQUIRED_PERMISSIONS =
             mutableListOf (

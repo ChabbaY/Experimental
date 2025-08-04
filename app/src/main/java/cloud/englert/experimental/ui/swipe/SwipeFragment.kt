@@ -45,7 +45,8 @@ class SwipeFragment : Fragment() {
         recyclerView = binding.recyclerView
         adapter = CardAdapter(topics)
         recyclerView.layoutManager = object :
-            LinearLayoutManager(requireContext(), VERTICAL, false) {
+            LinearLayoutManager(requireContext(), VERTICAL,
+                false) {
                 // Disable vertical scrolling
                 override fun canScrollVertically(): Boolean = false
         }
@@ -59,8 +60,10 @@ class SwipeFragment : Fragment() {
         _binding = null
     }
 
-    val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,
-        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or ItemTouchHelper.UP or ItemTouchHelper.DOWN
+    val itemTouchHelper = ItemTouchHelper(
+        object : ItemTouchHelper.SimpleCallback(0,
+        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN
     ) {
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                             target: RecyclerView.ViewHolder): Boolean = false

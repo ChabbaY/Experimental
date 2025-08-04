@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+
 import cloud.englert.experimental.custom.ThemeSetup.applyTheme
 
 class SettingsActivity : AppCompatActivity() {

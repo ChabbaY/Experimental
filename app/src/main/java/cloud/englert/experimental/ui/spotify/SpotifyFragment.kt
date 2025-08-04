@@ -85,20 +85,23 @@ class SpotifyFragment : Fragment() {
     }
 
     private fun login() {
-        // Request code will be used to verify if result comes from the login activity. Can be set to any integer.
+        // Request code will be used to verify if result comes from the login activity.
+        // Can be set to any integer.
         val authRequestCode = 1337
 
-        var builder: AuthorizationRequest.Builder =
-            AuthorizationRequest.Builder(clientId, AuthorizationResponse.Type.CODE, redirectUri)
+        val builder: AuthorizationRequest.Builder =
+            AuthorizationRequest.Builder(clientId, AuthorizationResponse.Type.CODE,
+                redirectUri)
 
         builder.setScopes(arrayOf("streaming"))
-        var request: AuthorizationRequest = builder.build()
+        val request: AuthorizationRequest = builder.build()
 
-        AuthorizationClient.openLoginActivity(requireActivity(), authRequestCode, request);
+        AuthorizationClient.openLoginActivity(requireActivity(), authRequestCode,
+            request)
     }
 
     private fun play() {
-        spotifyAppRemote?.let {
+        spotifyAppRemote?.let { it ->
             // Play a playlist
             val playlistURI = "spotify:playlist:37i9dQZF1DX2sUQwD7tbmL"
             it.playerApi.play(playlistURI)

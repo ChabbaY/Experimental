@@ -17,8 +17,8 @@ class CardAdapter(private val topics: MutableList<String>) :
     var toggle: Boolean = false
 
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val topicText: TextView = itemView.findViewById<TextView>(R.id.text_view)
-        val actionIcon: ImageView = itemView.findViewById<ImageView>(R.id.action_icon)
+        val topicText: TextView = itemView.findViewById(R.id.text_view)
+        val actionIcon: ImageView = itemView.findViewById(R.id.action_icon)
         val background: View = itemView.findViewById(R.id.linear_layout_background)
     }
 
