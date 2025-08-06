@@ -27,3 +27,7 @@ Custom made with RecyclerView & ItemTouchHelper
 ## Wifi Direct
 
 TODO
+
+## Import / Export
+
+as JSON using Gson

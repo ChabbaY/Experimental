@@ -46,4 +46,10 @@
 
     <!-- Wifi Direct -->
     <string name="wifi_direct_message">not implemented yet</string>
+
+    <!-- Json -->
+    <string name="content_placeholder">no content yet</string>
+    <string name="import_data">Import Data</string>
+    <string name="export_data">Export Data</string>
+    <string name="generate">Generate</string>
 </resources>
