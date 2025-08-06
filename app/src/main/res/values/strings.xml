@@ -52,4 +52,7 @@
     <string name="import_data">Import Data</string>
     <string name="export_data">Export Data</string>
     <string name="generate">Generate</string>
+
+    <!-- Notification -->
+    <string name="send_notification_5s">Notification in 5s</string>
 </resources>

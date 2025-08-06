@@ -31,3 +31,7 @@ TODO
 ## Import / Export
 
 as JSON using Gson
+
+## Notification
+
+using AndroidX
