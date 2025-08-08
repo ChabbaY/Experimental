@@ -11,6 +11,9 @@
     <string name="menu_api">API</string>
     <string name="menu_camera">Camera</string>
     <string name="menu_gps">GPS</string>
+    <string name="menu_json">JSON</string>
+    <string name="menu_notification">Notification</string>
+    <string name="menu_qr">QR</string>
     <string name="menu_spotify">Spotify</string>
     <string name="menu_swipe">Swipe</string>
     <string name="menu_wifi_direct">Wifi Direct</string>
@@ -55,4 +58,9 @@
 
     <!-- Notification -->
     <string name="send_notification_5s">Notification in 5s</string>
+
+    <!-- QR -->
+    <string name="hint_qr">Content of QR Code</string>
+    <string name="generate_qr">Generate QR Code</string>
+    <string name="qr_code">QR Code</string>
 </resources>

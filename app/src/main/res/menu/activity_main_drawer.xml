@@ -17,6 +17,18 @@
             android:icon="@drawable/ic_menu_gps"
             android:title="@string/menu_gps" />
         <item
+            android:id="@+id/nav_json"
+            android:icon="@drawable/ic_save"
+            android:title="@string/menu_json" />
+        <item
+            android:id="@+id/nav_notification"
+            android:icon="@drawable/ic_save"
+            android:title="@string/menu_notification" />
+        <item
+            android:id="@+id/nav_qr"
+            android:icon="@drawable/ic_save"
+            android:title="@string/menu_qr" />
+        <item
             android:id="@+id/nav_spotify"
             android:icon="@drawable/ic_menu_spotify"
             android:title="@string/menu_spotify" />

@@ -35,3 +35,7 @@ as JSON using Gson
 ## Notification
 
 using AndroidX
+
+## QR
+
+QR-Code Generator
