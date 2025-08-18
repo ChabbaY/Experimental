@@ -1,32 +1,42 @@
 package cloud.englert.experimental.qrgenerator
 
-import kotlin.math.floor
-import kotlin.math.log
-
 class QRCodeGenerator() {
     private var mode: Int = 0
-    private var version: Int = 0
+    private lateinit var version: Version
 
-    fun generate(value: String) {
-        mode = EncodingMode.of(value)
-        version = Version.of(mode, value.length, Version.ErrorCorrection.LOW)
-        val lengthBitsSize = getLengthBits(mode, version)
+    fun generate(content: String) {
+        mode = EncodingMode.of(content)
+        version = Version.of(mode, content.length, Version.ErrorCorrection.LOW)
+        val numLengthBits = version.getLengthBitsNumber(mode)
+        val numDataCodewords = version.getDataCodewordsNumber()
+        getByteData(content, numLengthBits, numDataCodewords)
     }
 
-    private fun getLengthBits(mode: Int, version: Int): Int {
-        val modeIndex = floor(log(mode.toDouble(), 2.0)).toInt()
-        val bitsIndex = if (version > 26) 2
-        else if (version > 9) 1
-        else 0
-        return LENGTH_BITS[modeIndex][bitsIndex]
-    }
+    private fun getByteData(content: String, numLengthBits: Int, numDataCodewords: Int): IntArray {
+        val data = IntArray(numDataCodewords)
+        val rightShift = (4 + numLengthBits).and(7)
+        val leftShift = 8 - rightShift
+        val andMask = 0x01.shl(rightShift) - 1
+        val dataIndexStart = if(numLengthBits > 12) 2 else 1
 
-    companion object {
-        private val LENGTH_BITS = arrayOf(
-            arrayOf(10, 12, 14),
-            arrayOf(9, 11, 13),
-            arrayOf(8, 16, 16),
-            arrayOf(8, 10, 12)
-        )
+        data[0] = 64 + (content.length.shr(numLengthBits - 4))
+        if (numLengthBits > 12) {
+            data[1] = content.length.shr(rightShift).and(255)
+        }
+        data[dataIndexStart] = content.length.and(andMask).shl(leftShift)
+
+        for (index in 0 until content.length) {
+            val byte = content[index].code
+            data[index + dataIndexStart] =
+                data[index + dataIndexStart].or(byte.shr(rightShift))
+            data[index + dataIndexStart + 1] = byte.and(andMask).shl(leftShift)
+        }
+        val remaining = numDataCodewords - content.length - dataIndexStart - 1
+        for (index in 0 until remaining) {
+            val byte = if (index % 2 == 1) 17 else 236
+            data[index + content.length + 2] = byte
+        }
+
+        return data
     }
 }
