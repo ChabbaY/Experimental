@@ -68,6 +68,7 @@ dependencies {
     implementation(files("libs/spotify-auth-release-2.1.0.aar"))
     implementation(libs.gson)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

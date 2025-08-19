@@ -17,6 +17,7 @@ retrofit = "3.0.0"
 camerax = "1.4.2"
 playServicesLocation = "21.3.0"
 gson = "2.13.1"
+junitJupiter = "5.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ camerax-view = { group = "androidx.camera", name = "camera-view", version.ref = 
 camerax-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "camerax" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

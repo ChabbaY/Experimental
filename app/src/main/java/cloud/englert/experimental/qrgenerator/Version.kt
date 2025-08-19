@@ -3,8 +3,8 @@ package cloud.englert.experimental.qrgenerator
 import kotlin.math.floor
 import kotlin.math.log
 
-class Version(val code: Int, val errorCorrection: ErrorCorrection) {
-    fun getLengthBitsNumber(mode: Int): Int {
+class Version(val code: Int, val errorCorrection: ErrorCorrection, val mode: Int) {
+    fun getLengthBitsNumber(): Int {
         val modeIndex = floor(log(mode.toDouble(), 2.0)).toInt()
         val bitsIndex = if (code > 26) 2
         else if (code > 9) 1
@@ -22,14 +22,14 @@ class Version(val code: Int, val errorCorrection: ErrorCorrection) {
             val errorIndex = errorCorrection.ordinal
             for (version in 0..39) {
                 if (CAPACITIES[version][errorIndex][modeIndex] >= characters) {
-                    return Version(version + 1, errorCorrection)
+                    return Version(version + 1, errorCorrection, mode)
                 }
             }
-            return Version(40, errorCorrection)
+            return Version(40, errorCorrection, mode)
         }
 
         private val CAPACITIES = arrayOf(
-            // version -> error correction L-M-H-Q -> mode (num, alpha, byte, kanji)
+            // version -> error correction L-M-Q-H -> mode (num, alpha, byte, kanji)
             arrayOf( // version 1
                 arrayOf(41, 25, 17, 10),
                 arrayOf(34, 20, 14, 8),
@@ -234,7 +234,7 @@ class Version(val code: Int, val errorCorrection: ErrorCorrection) {
         )
 
         private val CODEWORDS = arrayOf(
-            // version -> ec level ->
+            // version -> ec level L-M-Q-H ->
             // dc, ecc/block, blocks/group1, dc/block (group1), blocks/group2, dc/block (group2)
             arrayOf( // version 1
                 arrayOf(19,  7, 1, 19, 0, 0),

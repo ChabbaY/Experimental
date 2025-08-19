@@ -1,13 +1,12 @@
 package cloud.englert.experimental.qrgenerator
 
 class QRCodeGenerator() {
-    private var mode: Int = 0
     private lateinit var version: Version
 
     fun generate(content: String) {
-        mode = EncodingMode.of(content)
+        val mode = EncodingMode.of(content)
         version = Version.of(mode, content.length, Version.ErrorCorrection.LOW)
-        val numLengthBits = version.getLengthBitsNumber(mode)
+        val numLengthBits = version.getLengthBitsNumber()
         val numDataCodewords = version.getDataCodewordsNumber()
         getByteData(content, numLengthBits, numDataCodewords)
     }

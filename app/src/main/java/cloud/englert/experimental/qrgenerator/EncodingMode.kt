@@ -1,21 +1,21 @@
 package cloud.englert.experimental.qrgenerator
 
-import androidx.core.text.isDigitsOnly
-
 class EncodingMode {
     companion object {
+        private const val REGEX_NUMERIC = "[0-9]*"
         private const val REGEX_ALPHANUMERIC = "[A-Za-z0-9]*"
         private const val REGEX_LATIN1 = "[\u0020-\u007e\u00a0-\u00ff]*"
         private const val REGEX_KANJI = "[\u3400-\u4dbf\u4e00-\u9fc6]*"
 
         fun of(value: String): Int {
-            if (value.isDigitsOnly())
+            if (value.matches(REGEX_NUMERIC.toRegex()))
+            //if (value.matches(Regex.fromLiteral(REGEX_NUMERIC)))
                 return Mode.NUMERIC.value
-            if (value.matches(Regex.fromLiteral(REGEX_ALPHANUMERIC)))
+            if (value.matches(REGEX_ALPHANUMERIC.toRegex()))
                 return Mode.ALPHANUMERIC.value
-            if (value.matches(Regex.fromLiteral(REGEX_LATIN1)))
+            if (value.matches(REGEX_LATIN1.toRegex()))
                 return Mode.BYTE.value
-            if (value.matches(Regex.fromLiteral(REGEX_KANJI)))
+            if (value.matches(REGEX_KANJI.toRegex()))
                 return Mode.KANJI.value
             return Mode.ECI.value
         }
