@@ -11,12 +11,12 @@ class EncodingModeTest {
 
     @Test
     fun canDetectAlphanumeric() {
-        assertEquals(0b0010, EncodingMode.of("Hallo1234"))
+        assertEquals(0b0010, EncodingMode.of("Hallo 1234"))
     }
 
     @Test
     fun canDetectLatin1() {
-        assertEquals(0b0100, EncodingMode.of("Hello World!"))
+        assertEquals(0b0100, EncodingMode.of("Hello, World!"))
     }
 
     @Test

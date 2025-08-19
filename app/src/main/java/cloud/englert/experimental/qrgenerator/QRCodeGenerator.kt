@@ -1,41 +1,120 @@
 package cloud.englert.experimental.qrgenerator
 
+import cloud.englert.experimental.qrgenerator.EncodingMode.Mode
+
 class QRCodeGenerator() {
     private lateinit var version: Version
+    private var binaryData = StringBuilder("")
 
     fun generate(content: String) {
         val mode = EncodingMode.of(content)
-        version = Version.of(mode, content.length, Version.ErrorCorrection.LOW)
+        version = Version.of(mode, content.length,
+            Version.ErrorCorrection.MEDIUM)
+        binaryData.append(toBinary(mode, 4))
         val numLengthBits = version.getLengthBitsNumber()
-        val numDataCodewords = version.getDataCodewordsNumber()
-        getByteData(content, numLengthBits, numDataCodewords)
+        binaryData.append(toBinary(content.length, numLengthBits))
+        appendBinaryData(content)
     }
 
-    private fun getByteData(content: String, numLengthBits: Int, numDataCodewords: Int): IntArray {
-        val data = IntArray(numDataCodewords)
-        val rightShift = (4 + numLengthBits).and(7)
-        val leftShift = 8 - rightShift
-        val andMask = 0x01.shl(rightShift) - 1
-        val dataIndexStart = if(numLengthBits > 12) 2 else 1
+    fun getBinaryData(): String {
+        return binaryData.toString()
+    }
 
-        data[0] = 64 + (content.length.shr(numLengthBits - 4))
-        if (numLengthBits > 12) {
-            data[1] = content.length.shr(rightShift).and(255)
+    private fun appendBinaryData(content: String) {
+        when(version.mode) {
+            Mode.NUMERIC.value -> {
+                val groups = content.chunked(3)
+                for (group in groups) {
+                    val number = group.toInt()
+                    when(group.length) {
+                        3 -> binaryData.append(toBinary(number, 10))
+                        2 -> binaryData.append(toBinary(number, 7))
+                        1 -> binaryData.append(toBinary(number, 4))
+                    }
+                }
+            }
+            Mode.ALPHANUMERIC.value -> {
+                val groups = content.chunked(2)
+                for (group in groups) {
+                    when(group.length) {
+                        2 -> {
+                            val number = alphanumericCode(group[0]) * 45 +
+                                    alphanumericCode(group[1])
+                            binaryData.append(toBinary(number, 11))
+                        }
+                        1 -> {
+                            val number = alphanumericCode(group[0])
+                            binaryData.append(toBinary(number, 6))
+                        }
+                    }
+                }
+            }
+            Mode.BYTE.value, Mode.ECI.value -> {
+                for (char in content) {
+                    binaryData.append(toBinary(char.code, 8))
+                }
+            }
+            Mode.KANJI.value -> {
+                // TODO kanji encoding
+            }
         }
-        data[dataIndexStart] = content.length.and(andMask).shl(leftShift)
+    }
 
-        for (index in 0 until content.length) {
-            val byte = content[index].code
-            data[index + dataIndexStart] =
-                data[index + dataIndexStart].or(byte.shr(rightShift))
-            data[index + dataIndexStart + 1] = byte.and(andMask).shl(leftShift)
+    private fun toBinary(number: Int, length: Int): String {
+        val builder = StringBuilder("")
+        for (index in 0 until length) {
+            builder.append(number.shr(length - index - 1).and(1))
         }
-        val remaining = numDataCodewords - content.length - dataIndexStart - 1
-        for (index in 0 until remaining) {
-            val byte = if (index % 2 == 1) 17 else 236
-            data[index + content.length + 2] = byte
-        }
+        return builder.toString()
+    }
 
-        return data
+    private fun alphanumericCode(char: Char): Int {
+        return when(char) {
+            '0' -> 0
+            '1' -> 1
+            '2' -> 2
+            '3' -> 3
+            '4' -> 4
+            '5' -> 5
+            '6' -> 6
+            '7' -> 7
+            '8' -> 8
+            '9' -> 9
+            'A' -> 10
+            'B' -> 11
+            'C' -> 12
+            'D' -> 13
+            'E' -> 14
+            'F' -> 15
+            'G' -> 16
+            'H' -> 17
+            'I' -> 18
+            'J' -> 19
+            'K' -> 20
+            'L' -> 21
+            'M' -> 22
+            'N' -> 23
+            'O' -> 24
+            'P' -> 25
+            'Q' -> 26
+            'R' -> 27
+            'S' -> 28
+            'T' -> 29
+            'U' -> 30
+            'V' -> 31
+            'W' -> 32
+            'X' -> 33
+            'Y' -> 34
+            'Z' -> 35
+            ' ' -> 36
+            '$' -> 37
+            '%' -> 38
+            '*' -> 39
+            '+' -> 40
+            '-' -> 41
+            '.' -> 42
+            '/' -> 43
+            else -> 44 // ':'
+        }
     }
 }
