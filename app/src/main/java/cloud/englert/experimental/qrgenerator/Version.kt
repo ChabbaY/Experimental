@@ -16,6 +16,10 @@ class Version(val code: Int, val errorCorrection: ErrorCorrection, val mode: Int
         return CODEWORDS[code - 1][errorCorrection.ordinal][0]
     }
 
+    fun getErrorCorrectionCodewordsNumber(): Int {
+        return CODEWORDS[code - 1][errorCorrection.ordinal][1]
+    }
+
     companion object {
         fun of(mode: Int, characters: Int, errorCorrection: ErrorCorrection): Version {
             val modeIndex = floor(log(mode.toDouble(), 2.0)).toInt()

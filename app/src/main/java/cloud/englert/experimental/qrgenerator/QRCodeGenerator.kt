@@ -5,6 +5,7 @@ import cloud.englert.experimental.qrgenerator.EncodingMode.Mode
 class QRCodeGenerator() {
     private lateinit var version: Version
     private var binaryData = StringBuilder("")
+    private var errorCorrection = ErrorCorrection()
 
     fun generate(content: String) {
         val mode = EncodingMode.of(content)
@@ -15,10 +16,20 @@ class QRCodeGenerator() {
         binaryData.append(toBinary(content.length, numLengthBits))
         appendBinaryData(content)
         appendPadding()
+        // appendErrorCorrection() TODO
     }
 
     fun getBinaryData(): String {
         return binaryData.toString()
+    }
+
+    private fun getBinaryDataAsArray(): IntArray {
+        val bytes = binaryData.toString().chunked(8)
+        val result = IntArray(bytes.size)
+        for (index in 0 until bytes.size) {
+            result[index] = binaryToInt(bytes[index])
+        }
+        return result
     }
 
     private fun appendBinaryData(content: String) {
@@ -93,12 +104,28 @@ class QRCodeGenerator() {
         }
     }
 
+    private fun appendErrorCorrection() {
+        val codewords = errorCorrection.getErrorCorrectionCodewords(getBinaryDataAsArray(),
+            version.getErrorCorrectionCodewordsNumber())
+        for (codeword in codewords) {
+            binaryData.append(toBinary(codeword, 8))
+        }
+    }
+
     private fun toBinary(number: Int, length: Int): String {
         val builder = StringBuilder("")
         for (index in 0 until length) {
             builder.append(number.shr(length - index - 1).and(1))
         }
         return builder.toString()
+    }
+
+    private fun binaryToInt(binary: String): Int {
+        var result = 0
+        for (index in 0 until binary.length) {
+            result += binary[index].digitToInt().shl(binary.length - index - 1)
+        }
+        return result
     }
 
     private fun alphanumericCode(char: Char): Int {
