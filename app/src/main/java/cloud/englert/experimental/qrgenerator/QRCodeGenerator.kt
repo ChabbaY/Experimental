@@ -14,6 +14,7 @@ class QRCodeGenerator() {
         val numLengthBits = version.getLengthBitsNumber()
         binaryData.append(toBinary(content.length, numLengthBits))
         appendBinaryData(content)
+        appendPadding()
     }
 
     fun getBinaryData(): String {
@@ -56,6 +57,38 @@ class QRCodeGenerator() {
             }
             Mode.KANJI.value -> {
                 // TODO kanji encoding
+            }
+        }
+    }
+
+    private fun appendPadding() {
+        val requiredDataBits = version.getDataCodewordsNumber() * 8
+        var remainingBits = requiredDataBits - binaryData.length
+        if (remainingBits > 0) {
+            if (remainingBits > 3) {
+                // add 4 bit terminator and fill up last byte if necessary
+                binaryData.append("0000")
+                val lastByteBits = binaryData.length % 8
+                if (lastByteBits != 0) {
+                    binaryData.append("0".repeat(8 - lastByteBits))
+                    remainingBits -= (8 - lastByteBits)
+                }
+                remainingBits -= 4
+
+                // if necessary add pad bytes
+                if (remainingBits > 0) {
+                    val remainingBytes = remainingBits / 8
+                    for (index in 0 until remainingBytes) {
+                        if (index % 2 == 0) {
+                            binaryData.append("11101100") // 236
+                        } else {
+                            binaryData.append("00010001") // 17
+                        }
+                    }
+                }
+            } else {
+                // add remaining bits
+                binaryData.append("0".repeat(remainingBits))
             }
         }
     }
