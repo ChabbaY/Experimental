@@ -1,5 +1,6 @@
 package cloud.englert.experimental.qrgenerator
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ErrorCorrectionTest {
@@ -15,6 +16,46 @@ class ErrorCorrectionTest {
     val data4 = arrayOf(70,247,118,86,194,6,151,50,224,236,17,236,17,236,17,236).toIntArray()
     val result4 =
         arrayOf(140,100,250,247,108,131,37,104,253,113,111,235,197,83,6,205,89,74).toIntArray()
+
+    @Test
+    fun canMultiply() {
+        val errorCorrection = ErrorCorrection()
+        val result = errorCorrection.multiply(16, 32)
+        assertEquals(58, result)
+    }
+
+    @Test
+    fun canDivide() {
+        val errorCorrection = ErrorCorrection()
+        val result = errorCorrection.divide(58, 32)
+        assertEquals(16, result)
+    }
+
+    @Test
+    fun canGetGeneratorPoly() {
+        val errorCorrection = ErrorCorrection()
+        val result = errorCorrection.getGeneratorPoly(16)
+        val expected = intArrayOf(1,59,13,104,189,68,209,30,8,163,65,41,229,98,50,36,59)
+        println(result.contentToString())
+        println(expected.contentToString())
+        assert(result.contentEquals(expected))
+    }
+
+    @Test
+    fun canMultiplyPoly() {
+        val errorCorrection = ErrorCorrection()
+        val result = errorCorrection
+            .polyMultiply(intArrayOf(1,3,2), intArrayOf(2,1,7))
+        val expected = intArrayOf(2,7,14,23,14)
+        println(result.contentToString())
+        println(expected.contentToString())
+        assert(result.contentEquals(expected))
+    }
+
+    @Test
+    fun canModuloPoly() {
+
+    }
 
     @Test
     fun example1() {

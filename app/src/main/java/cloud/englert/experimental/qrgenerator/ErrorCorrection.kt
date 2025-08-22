@@ -22,44 +22,41 @@ class ErrorCorrection() {
         return polyDivideRest(messagePoly, getGeneratorPoly(numECCodewords))
     }
 
-    private fun getGeneratorPoly(degree: Int): IntArray {
-        var result = arrayOf(1).toIntArray()
+    fun getGeneratorPoly(degree: Int): IntArray {
+        var result = intArrayOf(1)
         for (index in 0 until degree) {
-            result = polyMultiply(result, arrayOf(1, EXP[index]).toIntArray())
+            result = polyMultiply(result, intArrayOf(1, EXP[index]))
         }
         return result
     }
 
-    private fun multiply(a: Int, b: Int): Int {
+    fun multiply(a: Int, b: Int): Int {
         return EXP[(LOG[a] + LOG[b]) % 255]
     }
 
-    private fun divide(a: Int, b: Int): Int {
+    fun divide(a: Int, b: Int): Int {
         return EXP[(LOG[a] + LOG[b] * 254) % 255]
     }
 
-    private fun polyMultiply(poly1: IntArray, poly2: IntArray): IntArray {
+    fun polyMultiply(poly1: IntArray, poly2: IntArray): IntArray {
         val result = IntArray(poly1.size + poly2.size - 1)
-        for (index in 0 until result.size) {
-            var coefficient = 0
-            for (index1 in 0..index) {
-                val index2 = index - index1
-                if (index1 < poly1.size && index2 < poly2.size) {
-                    coefficient =
-                        coefficient.xor(multiply(poly1[index1], poly2[index2]))
-                }
+        for (index1 in 0 until poly1.size) {
+            for (index2 in 0 until poly2.size) {
+                print("\n$index1/$index2: ${result[index1 + index2]} -> ")
+                result[index1 + index2] =
+                    result[index1 + index2] xor multiply(poly1[index1], poly2[index2])
+                print(result[index1 + index2])
             }
-            result[index] = coefficient
         }
         return result
     }
 
-    private fun polyDivideRest(poly1: IntArray, poly2: IntArray): IntArray {
+    fun polyDivideRest(poly1: IntArray, poly2: IntArray): IntArray {
         val quotientLength = poly1.size - poly2.size + 1
         var result = poly1.copyOf()
         for (count in 0 until quotientLength) {
             if (result[0] != 0) {
-                val factor = arrayOf(divide(result[0], poly2[0])).toIntArray()
+                val factor = intArrayOf(divide(result[0], poly2[0]))
                 val multiplied = polyMultiply(poly2, factor)
                 val subtr = IntArray(result.size)
                 for (index in 0 until multiplied.size) {
