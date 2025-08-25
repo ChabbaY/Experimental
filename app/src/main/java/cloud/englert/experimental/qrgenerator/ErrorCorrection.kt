@@ -42,30 +42,23 @@ class ErrorCorrection() {
         val result = IntArray(poly1.size + poly2.size - 1)
         for (index1 in 0 until poly1.size) {
             for (index2 in 0 until poly2.size) {
-                print("\n$index1/$index2: ${result[index1 + index2]} -> ")
                 result[index1 + index2] =
                     result[index1 + index2] xor multiply(poly1[index1], poly2[index2])
-                print(result[index1 + index2])
             }
         }
         return result
     }
 
     fun polyDivideRest(poly1: IntArray, poly2: IntArray): IntArray {
-        val quotientLength = poly1.size - poly2.size + 1
-        var result = poly1.copyOf()
-        for (count in 0 until quotientLength) {
-            if (result[0] != 0) {
-                val factor = intArrayOf(divide(result[0], poly2[0]))
-                val multiplied = polyMultiply(poly2, factor)
-                val subtr = IntArray(result.size)
-                for (index in 0 until multiplied.size) {
-                    if (index < subtr.size) subtr[index] = multiplied[index]
-                }
-                result.mapIndexed { index, value -> value.xor(subtr[index])}
-            }
-
-            result = result.slice(1..result.size - 1).toIntArray()
+        val steps = poly1.size
+        var result = poly1.copyOf(poly1.size + poly2.size - 1)
+        for (step in 1..steps) {
+            val multiplied = polyMultiply(poly2, intArrayOf(result[0]))
+            result = result.mapIndexed { index, value ->
+                if (index < multiplied.size) value.xor(multiplied[index])
+                else value
+            }.toIntArray()
+            result = result.slice(1..(result.size - 1)).toIntArray()
         }
         return result
     }

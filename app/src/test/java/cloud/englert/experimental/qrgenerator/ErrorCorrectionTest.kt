@@ -42,11 +42,10 @@ class ErrorCorrectionTest {
     }
 
     @Test
-    fun canMultiplyPoly() {
+    fun canMultiplyPolyWithFactor() {
         val errorCorrection = ErrorCorrection()
-        val result = errorCorrection
-            .polyMultiply(intArrayOf(1,3,2), intArrayOf(2,1,7))
-        val expected = intArrayOf(2,7,14,23,14)
+        val result = errorCorrection.polyMultiply(intArrayOf(1,2,3), intArrayOf(2))
+        val expected = intArrayOf(2,4,6)
         println(result.contentToString())
         println(expected.contentToString())
         assert(result.contentEquals(expected))
@@ -54,7 +53,13 @@ class ErrorCorrectionTest {
 
     @Test
     fun canModuloPoly() {
-
+        val errorCorrection = ErrorCorrection()
+        val result = errorCorrection.polyDivideRest(intArrayOf(32,91,11,120,209,114,220,77,67,64,236,17,236),
+            intArrayOf(1,137,73,227,17,177,17,52,13,46,43,83,132,120))
+        val expected = intArrayOf(168,72,22,82,217,54,156,0,46,15,180,122,16)
+        println(result.contentToString())
+        println(expected.contentToString())
+        assert(result.contentEquals(expected))
     }
 
     @Test

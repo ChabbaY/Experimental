@@ -16,7 +16,7 @@ class QRCodeGenerator() {
         binaryData.append(toBinary(content.length, numLengthBits))
         appendBinaryData(content)
         appendPadding()
-        // appendErrorCorrection() TODO
+        appendErrorCorrection()
     }
 
     fun getBinaryData(): String {
