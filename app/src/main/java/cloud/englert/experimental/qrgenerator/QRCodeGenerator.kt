@@ -32,6 +32,23 @@ class QRCodeGenerator() {
         return result
     }
 
+    private fun getBinaryDataAsBlocks(blocksInformation: IntArray): Array<IntArray?> {
+        val blocks = blocksInformation[0] + blocksInformation[2]
+        var binaryArray = getBinaryDataAsArray()
+        val result = arrayOfNulls<IntArray>(blocks)
+        for (index in 0 until blocksInformation[0]) {
+            val offset = blocksInformation[1]
+            result[index] = binaryArray.sliceArray(0 until offset)
+            binaryArray = binaryArray.sliceArray(offset until binaryArray.size)
+        }
+        for (index in blocksInformation[0] until blocks) {
+            val offset = blocksInformation[3]
+            result[index] = binaryArray.sliceArray(0 until offset)
+            binaryArray = binaryArray.sliceArray(offset until binaryArray.size)
+        }
+        return result
+    }
+
     private fun appendBinaryData(content: String) {
         when(version.mode) {
             Mode.NUMERIC.value -> {
@@ -105,11 +122,47 @@ class QRCodeGenerator() {
     }
 
     private fun appendErrorCorrection() {
-        val codewords = errorCorrection.getErrorCorrectionCodewords(getBinaryDataAsArray(),
-            version.getErrorCorrectionCodewordsNumber())
-        for (codeword in codewords) {
-            binaryData.append(toBinary(codeword, 8))
+        val blocksInformation = version.getBlocksInformation()
+        val errorCorrectionCodewords = version.getErrorCorrectionCodewordsNumber()
+        val numBlocks = blocksInformation[0] + blocksInformation[2]
+        if (numBlocks > 1) {
+            val blocks = getBinaryDataAsBlocks(blocksInformation)
+            val interleavedBlockData = IntArray(blocksInformation[0] * blocksInformation[1] +
+                    blocksInformation[2] * blocksInformation[3])
+            val interleavedErrorData = IntArray(errorCorrectionCodewords * numBlocks)
+            for (block in blocks.withIndex()) {
+                val blockData = block.value
+                if (blockData == null) continue
+                val codewords = errorCorrection.getErrorCorrectionCodewords(
+                    blockData, errorCorrectionCodewords
+                )
+
+                for (index in 0 until blockData.size) {
+                    interleavedBlockData[block.index + index * numBlocks] = blockData[index]
+                }
+                for (index in 0 until codewords.size) {
+                    interleavedErrorData[block.index + index * numBlocks] = codewords[index]
+                }
+            }
+
+            // rewrite interleaved block data
+            binaryData.clear()
+            for (data in interleavedBlockData) {
+                binaryData.append(toBinary(data, 8))
+            }
+            for (data in interleavedErrorData) {
+                binaryData.append(toBinary(data, 8))
+            }
+        } else { // only one block
+            val codewords = errorCorrection.getErrorCorrectionCodewords(
+                getBinaryDataAsArray(), errorCorrectionCodewords
+            )
+            for (codeword in codewords) {
+                binaryData.append(toBinary(codeword, 8))
+            }
         }
+
+        binaryData.append("0".repeat(version.getRemainderBits()))
     }
 
     private fun toBinary(number: Int, length: Int): String {

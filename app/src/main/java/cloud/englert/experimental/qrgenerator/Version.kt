@@ -20,6 +20,19 @@ class Version(val code: Int, val errorCorrection: ErrorCorrection, val mode: Int
         return CODEWORDS[code - 1][errorCorrection.ordinal][1]
     }
 
+    /**
+     * blocks in group 1, codewords / block in group 1
+     * blocks in group 2, codewords / block in group 2
+     */
+    fun getBlocksInformation(): IntArray {
+        return CODEWORDS[code - 1][errorCorrection.ordinal]
+            .slice(2 until 5).toIntArray()
+    }
+
+    fun getRemainderBits(): Int {
+        return REMAINDER_BITS[code - 1]
+    }
+
     companion object {
         fun of(mode: Int, characters: Int, errorCorrection: ErrorCorrection): Version {
             val modeIndex = floor(log(mode.toDouble(), 2.0)).toInt()
@@ -449,6 +462,17 @@ class Version(val code: Int, val errorCorrection: ErrorCorrection, val mode: Int
             arrayOf(9, 11, 13),
             arrayOf(8, 16, 16),
             arrayOf(8, 10, 12)
+        )
+
+        private val REMAINDER_BITS = arrayOf(
+            0, 7, 7, 7, 7,
+            7, 0, 0, 0, 0,
+            0, 0, 0, 3, 3,
+            3, 3, 3, 3, 3,
+            4, 4, 4, 4, 4,
+            4, 4, 3, 3, 3,
+            3, 3, 3, 3, 0,
+            0, 0, 0, 0, 0
         )
     }
 
