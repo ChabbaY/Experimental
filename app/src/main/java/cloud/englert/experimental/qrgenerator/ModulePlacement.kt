@@ -5,7 +5,7 @@ class ModulePlacement {
         /**
          * black module as 1, white module as 0
          */
-        fun placeData(data: String, version: Int) {
+        fun placeData(data: String, version: Int): Array<IntArray> {
             val size = version * 4 + 17
             // matrix[row][column], prefilled with 2 (unallocated)
             val matrix = Array(size) { it -> IntArray(size) { it -> 2 } }
@@ -14,9 +14,30 @@ class ModulePlacement {
             setFinderPattern(matrix, 3, 3)
             setFinderPattern(matrix, size - 4, 3)
             setFinderPattern(matrix, 3, size - 4)
+            setSeparators(matrix, size)
 
-            val alignmentPatternLocations = getAlignmentPatternLocations(version)
+            // alignment patterns
+            if (version > 1) {
+                val alignmentPatternLocations = getAlignmentPatternLocations(version)
+                for (coordinate in alignmentPatternLocations) {
+                    if (coordinate == null) continue
+                    setAlignmentPattern(matrix, coordinate[0], coordinate[1])
+                }
+            }
 
+            // timing patterns
+            setTimingPatterns(matrix, size)
+
+            // dark module
+            matrix[version * 4 + 9][8] = 1
+
+            // reserve areas
+            reserveAreas(matrix, size)
+
+            // fill in data
+            placeDataBits(matrix, data, size)
+
+            return matrix
         }
 
         /**
@@ -33,6 +54,100 @@ class ModulePlacement {
                     } else {
                         matrix[row + rowIndex][column + columnIndex] = 0
                     }
+                }
+            }
+        }
+
+        private fun setSeparators(matrix: Array<IntArray>, size: Int) {
+            for (row in 0 .. 7) {
+                matrix[row][7] = 0
+                matrix[row][size - 8] = 0
+            }
+            for (row in (size - 8) .. (size - 1)) {
+                matrix[row][7] = 0
+            }
+            for (column in 0 .. 6) {
+                matrix[7][column] = 0
+                matrix[size - 8][column] = 0
+            }
+            for (column in (size - 7) .. (size - 1)) {
+                matrix[7][column] = 0
+            }
+        }
+
+        private fun setAlignmentPattern(matrix: Array<IntArray>, row: Int, column: Int) {
+            for (rowIndex in -1 .. 1) {
+                for (columnIndex in -1 .. 1) {
+                    matrix[row + rowIndex][column + columnIndex] = 0
+                }
+            }
+            matrix[row][column] = 1
+            for (index in -2 .. 2) {
+                matrix[row - 2][index] = 1
+                matrix[row + 2][index] = 1
+                matrix[index][column - 2] = 1
+                matrix[index][column + 2] = 1
+            }
+        }
+
+        private fun setTimingPatterns(matrix: Array<IntArray>, size: Int) {
+            for (row in 8 .. (size - 9)) {
+                matrix[row][6] = if (row % 2 == 0) 1 else 0
+            }
+            for (column in 8 .. (size - 9)) {
+                matrix[6][column] = if (column % 2 == 0) 1 else 0
+            }
+        }
+
+        private fun reserveAreas(matrix: Array<IntArray>, size: Int) {
+            // format information
+            for (row in 0 .. 5) {
+                matrix[row][8] = 3
+            }
+            matrix[7][8] = 3
+            matrix[8][8] = 3
+            matrix[8][7] = 3
+            for (column in 0 .. 5) {
+                matrix[8][column] = 3
+            }
+            for (row in (size - 7) .. (size - 1)) {
+                matrix[row][8] = 3
+            }
+            for (column in (size - 8) .. (size - 1)) {
+                matrix[8][column] = 3
+            }
+
+            // version information (version 7 or higher)
+            if (size > 44) {
+                for (index1 in 0 .. 5) {
+                    for (index2 in (size - 9) .. (size - 11)) {
+                        matrix[index1][index2] = 3
+                        matrix[index2][index1] = 3
+                    }
+                }
+            }
+        }
+
+        private fun placeDataBits(matrix: Array<IntArray>, data: String, size: Int) {
+            val columns = size / 2
+            var dataIndex = 0
+            for (index in 0 until columns) {
+                var column = size - 1 - (index * 2)
+                if (column < 7) column--
+                val upwards = index % 2 == 0
+
+                var row = if (upwards) size - 1 else 0
+                val deltaRow = if (upwards) -1 else 1
+
+                while ((row > -1) && (row < size)) {
+                    for (columnIndex in 0 .. 1) {
+                        if (matrix[row][column - columnIndex] == 2) {
+                            matrix[row][column - columnIndex] = if (data[dataIndex] == '1') 1 else 0
+                            dataIndex++
+                        }
+                    }
+
+                    row += deltaRow
                 }
             }
         }
