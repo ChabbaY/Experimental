@@ -40,8 +40,7 @@ class QRFragment : Fragment() {
     }
 
     private fun generateCode(value: String) {
-        QRCodeGenerator().generate(value)
-        // TODO generate & show
-        binding.imageViewQr.setImageBitmap(null)
+        val bitmap = QRCodeGenerator().generate(value)
+        binding.imageViewQr.setImageBitmap(bitmap)
     }
 }

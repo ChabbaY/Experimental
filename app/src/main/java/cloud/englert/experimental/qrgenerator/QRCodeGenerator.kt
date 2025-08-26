@@ -1,5 +1,11 @@
 package cloud.englert.experimental.qrgenerator
 
+import android.graphics.Bitmap
+import android.graphics.Color
+
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
+
 import cloud.englert.experimental.qrgenerator.EncodingMode.Mode
 
 class QRCodeGenerator() {
@@ -7,7 +13,7 @@ class QRCodeGenerator() {
     private var binaryData = StringBuilder("")
     private var errorCorrection = ErrorCorrection()
 
-    fun generate(content: String) {
+    fun generate(content: String): Bitmap {
         val mode = EncodingMode.of(content)
         version = Version.of(mode, content.length,
             Version.ErrorCorrection.MEDIUM)
@@ -17,6 +23,9 @@ class QRCodeGenerator() {
         appendBinaryData(content)
         appendPadding()
         appendErrorCorrection()
+
+        val matrix = ModulePlacement.placeData(getBinaryData(), version.code)
+        return toImage(matrix)
     }
 
     fun getBinaryData(): String {
@@ -179,6 +188,17 @@ class QRCodeGenerator() {
             result += binary[index].digitToInt().shl(binary.length - index - 1)
         }
         return result
+    }
+
+    private fun toImage(matrix: Array<IntArray>): Bitmap {
+        val size = 17 + 4 * version.code
+        val image = createBitmap(size, size)
+        for (row in 0 until size) {
+            for (column in 0 until size) {
+                image[column, row] = if (matrix[row][column] == 1) Color.BLACK else Color.WHITE
+            }
+        }
+        return image
     }
 
     private fun alphanumericCode(char: Char): Int {
