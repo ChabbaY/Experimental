@@ -41,6 +41,62 @@ class ModulePlacement {
             return arrayOf(matrix, dataModules)
         }
 
+        fun setFormatAndVersionInformation(matrix: Array<IntArray>, version: Int, errorCorrection: Version.ErrorCorrection, mask: Int) {
+            // format information
+            val formatInformation = getFormatInformation(errorCorrection, mask)
+            matrix[8][0] = formatInformation[0]
+            matrix[8][1] = formatInformation[1]
+            matrix[8][2] = formatInformation[2]
+            matrix[8][3] = formatInformation[3]
+            matrix[8][4] = formatInformation[4]
+            matrix[8][5] = formatInformation[5]
+            matrix[8][7] = formatInformation[6]
+            matrix[8][8] = formatInformation[7]
+            matrix[7][8] = formatInformation[8]
+            matrix[5][8] = formatInformation[9]
+            matrix[4][8] = formatInformation[10]
+            matrix[3][8] = formatInformation[11]
+            matrix[2][8] = formatInformation[12]
+            matrix[1][8] = formatInformation[13]
+            matrix[0][8] = formatInformation[14]
+            matrix[matrix.size - 1][8] = formatInformation[0]
+            matrix[matrix.size - 2][8] = formatInformation[1]
+            matrix[matrix.size - 3][8] = formatInformation[2]
+            matrix[matrix.size - 4][8] = formatInformation[3]
+            matrix[matrix.size - 5][8] = formatInformation[4]
+            matrix[matrix.size - 6][8] = formatInformation[5]
+            matrix[matrix.size - 7][8] = formatInformation[6]
+            matrix[8][matrix.size - 8] = formatInformation[7]
+            matrix[8][matrix.size - 7] = formatInformation[8]
+            matrix[8][matrix.size - 6] = formatInformation[9]
+            matrix[8][matrix.size - 5] = formatInformation[10]
+            matrix[8][matrix.size - 4] = formatInformation[11]
+            matrix[8][matrix.size - 3] = formatInformation[12]
+            matrix[8][matrix.size - 2] = formatInformation[13]
+            matrix[8][matrix.size - 1] = formatInformation[14]
+
+            // version information
+            if (version > 6) {
+                val versionInformation = getVersionInformation(version)
+                // bottom left
+                var index = 0
+                for (column in (0 .. 5).reversed()) {
+                    for (row in ((matrix.size - 9) .. (matrix.size - 11)).reversed()) {
+                        matrix[row][column] = versionInformation[index]
+                        index++
+                    }
+                }
+                // top right
+                index = 0
+                for (row in (0 .. 5).reversed()) {
+                    for (column in ((matrix.size - 9) .. (matrix.size - 11)).reversed()) {
+                        matrix[row][column] = versionInformation[index]
+                        index++
+                    }
+                }
+            }
+        }
+
         /**
          * Sets the finder pattern in the matrix. Row & column define the center
          */
@@ -179,6 +235,14 @@ class ModulePlacement {
             return result
         }
 
+        private fun getFormatInformation(errorCorrection: Version.ErrorCorrection, mask: Int): IntArray {
+            return FORMAT_INFORMATION[errorCorrection.ordinal][mask].toIntArray()
+        }
+
+        private fun getVersionInformation(version: Int): IntArray {
+            return VERSION_INFORMATION[version - 7].toIntArray()
+        }
+
         // alignment patterns for versions 2-40
         private val ALIGNMENT_PATTERN_LOCATIONS = arrayOf(
             arrayOf(6, 18),
@@ -220,6 +284,73 @@ class ModulePlacement {
             arrayOf(6, 32, 58, 84, 110, 136, 162),
             arrayOf(6, 26, 54, 82, 110, 138, 166),
             arrayOf(6, 30, 58, 86, 114, 142, 170)
+        )
+
+        /**
+         * format information by ec -> mask
+         */
+        private val FORMAT_INFORMATION = arrayOf(
+            arrayOf( // ec L
+                arrayOf(1,1,1,0,1,1,1,1,1,0,0,0,1,0,0), arrayOf(1,1,1,0,0,1,0,1,1,1,1,0,0,1,1),
+                arrayOf(1,1,1,1,1,0,1,1,0,1,0,1,0,1,0), arrayOf(1,1,1,1,0,0,0,1,0,0,1,1,1,0,1),
+                arrayOf(1,1,0,0,1,1,0,0,0,1,0,1,1,1,1), arrayOf(1,1,0,0,0,1,1,0,0,0,1,1,0,0,0),
+                arrayOf(1,1,0,1,1,0,0,0,1,0,0,0,0,0,1), arrayOf(1,1,0,1,0,0,1,0,1,1,1,0,1,1,0)
+            ), arrayOf( // ec M
+                arrayOf(1,0,1,0,1,0,0,0,0,0,1,0,0,1,0), arrayOf(1,0,1,0,0,0,1,0,0,1,0,0,1,0,1),
+                arrayOf(1,0,1,1,1,1,0,0,1,1,1,1,1,0,0), arrayOf(1,0,1,1,0,1,1,0,1,0,0,1,0,1,1),
+                arrayOf(1,0,0,0,1,0,1,1,1,1,1,1,0,0,1), arrayOf(1,0,0,0,0,0,0,1,1,0,0,1,1,1,0),
+                arrayOf(1,0,0,1,1,1,1,1,0,0,1,0,1,1,1), arrayOf(1,0,0,1,0,1,0,1,0,1,0,0,0,0,0)
+            ), arrayOf( // ec Q
+                arrayOf(0,1,1,0,1,0,1,0,1,0,1,1,1,1,1), arrayOf(0,1,1,0,0,0,0,0,1,1,0,1,0,0,0),
+                arrayOf(0,1,1,1,1,1,1,0,0,1,1,0,0,0,1), arrayOf(0,1,1,1,0,1,0,0,0,0,0,0,1,1,0),
+                arrayOf(0,1,0,0,1,0,0,1,0,1,1,0,1,0,0), arrayOf(0,1,0,0,0,0,1,1,0,0,0,0,0,1,1),
+                arrayOf(0,1,0,1,1,1,0,1,1,0,1,1,0,1,0), arrayOf(0,1,0,1,0,1,1,1,1,1,0,1,1,0,1)
+            ), arrayOf( // ec H
+                arrayOf(0,0,1,0,1,1,0,1,0,0,0,1,0,0,1), arrayOf(0,0,1,0,0,1,1,1,0,1,1,1,1,1,0),
+                arrayOf(0,0,1,1,1,0,0,1,1,1,0,0,1,1,1), arrayOf(0,0,1,1,0,0,1,1,1,0,1,0,0,0,0),
+                arrayOf(0,0,0,0,1,1,1,0,1,1,0,0,0,1,0), arrayOf(0,0,0,0,0,1,0,0,1,0,1,0,1,0,1),
+                arrayOf(0,0,0,1,1,0,1,0,0,0,0,1,1,0,0), arrayOf(0,0,0,1,0,0,0,0,0,1,1,1,0,1,1)
+            )
+        )
+
+        /**
+         * version information for versions 7-40
+         */
+        private val VERSION_INFORMATION = arrayOf(
+            arrayOf(0,0,0,1,1,1,1,1,0,0,1,0,0,1,0,1,0,0),
+            arrayOf(0,0,1,0,0,0,0,1,0,1,1,0,1,1,1,1,0,0),
+            arrayOf(0,0,1,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1),
+            arrayOf(0,0,1,0,1,0,0,1,0,0,1,1,0,1,0,0,1,1),
+            arrayOf(0,0,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0),
+            arrayOf(0,0,1,1,0,0,0,1,1,1,0,1,1,0,0,0,1,0),
+            arrayOf(0,0,1,1,0,1,1,0,0,0,0,1,0,0,0,1,1,1),
+            arrayOf(0,0,1,1,1,0,0,1,1,0,0,0,0,0,1,1,0,1),
+            arrayOf(0,0,1,1,1,1,1,0,0,1,0,0,1,0,1,0,0,0),
+            arrayOf(0,1,0,0,0,0,1,0,1,1,0,1,1,1,1,0,0,0),
+            arrayOf(0,1,0,0,0,1,0,1,0,0,0,1,0,1,1,1,0,1),
+            arrayOf(0,1,0,0,1,0,1,0,1,0,0,0,0,1,0,1,1,1),
+            arrayOf(0,1,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0),
+            arrayOf(0,1,0,1,0,0,1,0,0,1,1,0,1,0,0,1,1,0),
+            arrayOf(0,1,0,1,0,1,0,1,1,0,1,0,0,0,0,0,1,1),
+            arrayOf(0,1,0,1,1,0,1,0,0,0,1,1,0,0,1,0,0,1),
+            arrayOf(0,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0,0),
+            arrayOf(0,1,1,0,0,0,1,1,1,0,1,1,0,0,0,1,0,0),
+            arrayOf(0,1,1,0,0,1,0,0,0,1,1,1,1,0,0,0,0,1),
+            arrayOf(0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1),
+            arrayOf(0,1,1,0,1,1,0,0,0,0,1,0,0,0,1,1,1,0),
+            arrayOf(0,1,1,1,0,0,1,1,0,0,0,0,0,1,1,0,1,0),
+            arrayOf(0,1,1,1,0,1,0,0,1,1,0,0,1,1,1,1,1,1),
+            arrayOf(0,1,1,1,1,0,1,1,0,1,0,1,1,1,0,1,0,1),
+            arrayOf(0,1,1,1,1,1,0,0,1,0,0,1,0,1,0,0,0,0),
+            arrayOf(1,0,0,0,0,0,1,0,0,1,1,1,0,1,0,1,0,1),
+            arrayOf(1,0,0,0,0,1,0,1,1,0,1,1,1,1,0,0,0,0),
+            arrayOf(1,0,0,0,1,0,1,0,0,0,1,0,1,1,1,0,1,0),
+            arrayOf(1,0,0,0,1,1,0,1,1,1,1,0,0,1,1,1,1,1),
+            arrayOf(1,0,0,1,0,0,1,0,1,1,0,0,0,0,1,0,1,1),
+            arrayOf(1,0,0,1,0,1,0,1,0,0,0,0,1,0,1,1,1,0),
+            arrayOf(1,0,0,1,1,0,1,0,1,0,0,1,1,0,0,1,0,0),
+            arrayOf(1,0,0,1,1,1,0,1,0,1,0,1,0,0,0,0,0,1),
+            arrayOf(1,0,1,0,0,0,1,1,0,0,0,1,1,0,1,0,0,1)
         )
     }
 }

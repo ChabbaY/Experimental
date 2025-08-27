@@ -21,7 +21,9 @@ class QRCodeGenerator() {
         val placement = ModulePlacement.placeData(getBinaryData(), version.code)
         var matrix = placement[0]
         val dataModules = placement[1]
-        matrix = Mask.apply(matrix, dataModules)
+        val mask = Mask.apply(matrix, dataModules)
+        matrix = mask.matrix
+        ModulePlacement.setFormatAndVersionInformation(matrix, version.code, version.errorCorrection, mask.pattern)
         return toImage(matrix)
     }
 

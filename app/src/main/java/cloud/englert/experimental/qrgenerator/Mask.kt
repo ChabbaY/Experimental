@@ -5,12 +5,13 @@ import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.min
 
-class Mask {
+class Mask(val matrix: Array<IntArray>, val pattern: Int) {
     companion object {
         private val LOG_TAG = Mask::class.java.simpleName
 
-        fun apply(matrix: Array<IntArray>, dataModules: Array<IntArray>): Array<IntArray> {
+        fun apply(matrix: Array<IntArray>, dataModules: Array<IntArray>): Mask {
             var bestResult = matrix.copyOf()
+            var chosenPattern = 0
             var bestScore = Int.MAX_VALUE
 
             for (pattern in 0 until 8) {
@@ -23,11 +24,12 @@ class Mask {
                 if (score < bestScore) {
                     bestScore = score
                     bestResult = maskedMatrix
+                    chosenPattern = pattern
                     Log.d(LOG_TAG, "new best result set")
                 }
             }
 
-            return bestResult
+            return Mask(bestResult, chosenPattern)
         }
 
         private fun applyMaskPattern(matrix: Array<IntArray>, dataModules: Array<IntArray>, mask: Int) {
