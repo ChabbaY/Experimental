@@ -5,10 +5,11 @@ class ModulePlacement {
         /**
          * black module as 1, white module as 0
          */
-        fun placeData(data: String, version: Int): Array<IntArray> {
+        fun placeData(data: String, version: Int): Array<Array<IntArray>> {
             val size = version * 4 + 17
             // matrix[row][column], prefilled with 2 (unallocated)
             val matrix = Array(size) { it -> IntArray(size) { it -> 2 } }
+            val dataModules = Array(size) { it -> IntArray(size) }
 
             // finder patterns
             setFinderPattern(matrix, 3, 3)
@@ -35,9 +36,9 @@ class ModulePlacement {
             reserveAreas(matrix, size)
 
             // fill in data
-            placeDataBits(matrix, data, size)
+            placeDataBits(matrix, data, size, dataModules)
 
-            return matrix
+            return arrayOf(matrix, dataModules)
         }
 
         /**
@@ -128,7 +129,7 @@ class ModulePlacement {
             }
         }
 
-        private fun placeDataBits(matrix: Array<IntArray>, data: String, size: Int) {
+        private fun placeDataBits(matrix: Array<IntArray>, data: String, size: Int, dataModules: Array<IntArray>) {
             val columns = size / 2
             var dataIndex = 0
             for (index in 0 until columns) {
@@ -141,9 +142,15 @@ class ModulePlacement {
 
                 while ((row > -1) && (row < size)) {
                     for (columnIndex in 0 .. 1) {
-                        if (matrix[row][column - columnIndex] == 2 && dataIndex < data.length) { // TODO check why length check necessary
-                            matrix[row][column - columnIndex] = if (data[dataIndex] == '1') 1 else 0
-                            dataIndex++
+                        if (matrix[row][column - columnIndex] == 2) {
+                            if (dataIndex < data.length) { // TODO check why length check necessary
+                                matrix[row][column - columnIndex] =
+                                    if (data[dataIndex] == '1') 1 else 0
+                                dataIndex++
+                            } else {
+                                matrix[row][column - columnIndex] = 0
+                            }
+                            dataModules[row][column - columnIndex] = 1
                         }
                     }
 

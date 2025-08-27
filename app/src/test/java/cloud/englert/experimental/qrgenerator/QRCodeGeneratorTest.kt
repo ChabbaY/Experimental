@@ -2,7 +2,6 @@ package cloud.englert.experimental.qrgenerator
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.jupiter.api.Order
 
 class QRCodeGeneratorTest {
     /**
@@ -11,10 +10,9 @@ class QRCodeGeneratorTest {
      * ec 00100111011011011000010010110011111101100010000000111010011010101001110101110110
      */
     @Test
-    @Order(1)
     fun canGenerateNumericBinary() {
         val generator = QRCodeGenerator()
-        generator.generate("123456")
+        generator.generateCode("123456")
         assertEquals("0001000000011000011110110111001000000000111011000001000111101100" +
                 "00010001111011000001000111101100000100011110110000010001111011000010011101101101" +
                 "1000010010110011111101100010000000111010011010101001110101110110",
@@ -28,10 +26,9 @@ class QRCodeGeneratorTest {
      * ec 11000100001000110010011101110111111010111101011111100111111000100101110100010111
      */
     @Test
-    @Order(2)
     fun canGenerateAlphanumericBinary() {
         val generator = QRCodeGenerator()
-        generator.generate("HELLO WORLD")
+        generator.generateCode("HELLO WORLD")
         assertEquals("0010000001011011000010110111100011010001011100101101110001001101" +
                 "01000011010000001110110000010001111011000001000111101100000100011100010000100011" +
                 "0010011101110111111010111101011111100111111000100101110100010111",
@@ -45,10 +42,9 @@ class QRCodeGeneratorTest {
      *   ec 10011100010011010010111001101101011011001110110010011011010010110011000001011110
      */
     @Test
-    @Order(3)
     fun canGenerateByteBinary() {
         val generator = QRCodeGenerator()
-        generator.generate("Hello, world!")
+        generator.generateCode("Hello, world!")
         assertEquals("0100000011010100100001100101011011000110110001101111001011000010" +
                 "00000111011101101111011100100110110001100100001000010000111011001001110001001101" +
                 "0010111001101101011011001110110010011011010010110011000001011110",

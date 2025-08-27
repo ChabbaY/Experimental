@@ -36,7 +36,7 @@ class ModulePlacementTest {
             // println(result[index].contentToString())
             // println(expected[index].contentToString())
             // println()
-            assert(result[index].contentEquals(expected[index]))
+            assert(result[0][index].contentEquals(expected[index]))
         }
     }
 }

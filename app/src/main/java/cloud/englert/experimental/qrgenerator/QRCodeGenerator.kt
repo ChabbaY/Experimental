@@ -16,6 +16,16 @@ class QRCodeGenerator() {
     private var errorCorrection = ErrorCorrection()
 
     fun generate(content: String): Bitmap {
+        generateCode(content)
+
+        val placement = ModulePlacement.placeData(getBinaryData(), version.code)
+        var matrix = placement[0]
+        val dataModules = placement[1]
+        matrix = Mask.apply(matrix, dataModules)
+        return toImage(matrix)
+    }
+
+    fun generateCode(content: String) {
         val mode = EncodingMode.of(content)
         version = Version.of(mode, content.length,
             Version.ErrorCorrection.MEDIUM)
@@ -25,9 +35,6 @@ class QRCodeGenerator() {
         appendBinaryData(content)
         appendPadding()
         appendErrorCorrection()
-
-        val matrix = ModulePlacement.placeData(getBinaryData(), version.code)
-        return toImage(matrix)
     }
 
     fun getBinaryData(): String {
