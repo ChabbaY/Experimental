@@ -83,10 +83,10 @@ class ModulePlacement {
             }
             matrix[row][column] = 1
             for (index in -2 .. 2) {
-                matrix[row - 2][index] = 1
-                matrix[row + 2][index] = 1
-                matrix[index][column - 2] = 1
-                matrix[index][column + 2] = 1
+                matrix[row - 2][column + index] = 1
+                matrix[row + 2][column + index] = 1
+                matrix[row + index][column - 2] = 1
+                matrix[row + index][column + 2] = 1
             }
         }
 
@@ -141,7 +141,7 @@ class ModulePlacement {
 
                 while ((row > -1) && (row < size)) {
                     for (columnIndex in 0 .. 1) {
-                        if (matrix[row][column - columnIndex] == 2) {
+                        if (matrix[row][column - columnIndex] == 2 && dataIndex < data.length) { // TODO check why length check necessary
                             matrix[row][column - columnIndex] = if (data[dataIndex] == '1') 1 else 0
                             dataIndex++
                         }

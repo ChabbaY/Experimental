@@ -2,8 +2,10 @@ package cloud.englert.experimental.qrgenerator
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.util.Log
 
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 import androidx.core.graphics.set
 
 import cloud.englert.experimental.qrgenerator.EncodingMode.Mode
@@ -134,6 +136,7 @@ class QRCodeGenerator() {
         val blocksInformation = version.getBlocksInformation()
         val errorCorrectionCodewords = version.getErrorCorrectionCodewordsNumber()
         val numBlocks = blocksInformation[0] + blocksInformation[2]
+        Log.d(LOG_TAG, "creating error correction for $numBlocks blocks")
         if (numBlocks > 1) {
             val blocks = getBinaryDataAsBlocks(blocksInformation)
             val interleavedBlockData = IntArray(blocksInformation[0] * blocksInformation[1] +
@@ -146,8 +149,13 @@ class QRCodeGenerator() {
                     blockData, errorCorrectionCodewords
                 )
 
+                Log.d(LOG_TAG, "interleaving block ${block.index}")
                 for (index in 0 until blockData.size) {
-                    interleavedBlockData[block.index + index * numBlocks] = blockData[index]
+                    var dataIndex = block.index + index * numBlocks
+                    val maxIndex = interleavedBlockData.size - 1
+                    // last two blocks have one extra codeword
+                    if (dataIndex > maxIndex) dataIndex -= 2
+                    interleavedBlockData[dataIndex] = blockData[index]
                 }
                 for (index in 0 until codewords.size) {
                     interleavedErrorData[block.index + index * numBlocks] = codewords[index]
@@ -198,7 +206,12 @@ class QRCodeGenerator() {
                 image[column, row] = if (matrix[row][column] == 1) Color.BLACK else Color.WHITE
             }
         }
-        return image
+
+        val maxSize = 1000
+        val scale = maxSize / size
+
+        val scaledImage = image.scale(size * scale, size * scale, false)
+        return scaledImage
     }
 
     private fun alphanumericCode(char: Char): Int {
@@ -249,5 +262,9 @@ class QRCodeGenerator() {
             '/' -> 43
             else -> 44 // ':'
         }
+    }
+
+    companion object {
+        private val LOG_TAG = QRCodeGenerator::class.java.simpleName
     }
 }

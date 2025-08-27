@@ -26,7 +26,7 @@ class Version(val code: Int, val errorCorrection: ErrorCorrection, val mode: Int
      */
     fun getBlocksInformation(): IntArray {
         return CODEWORDS[code - 1][errorCorrection.ordinal]
-            .slice(2 until 5).toIntArray()
+            .slice(2 .. 5).toIntArray()
     }
 
     fun getRemainderBits(): Int {
