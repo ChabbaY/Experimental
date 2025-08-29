@@ -162,8 +162,8 @@ class QRCodeGenerator() {
                 for (index in 0 until blockData.size) {
                     var dataIndex = block.index + index * numBlocks
                     val maxIndex = interleavedBlockData.size - 1
-                    // last two blocks have one extra codeword
-                    if (dataIndex > maxIndex) dataIndex -= 2
+                    // blocks of group 2 have one extra codeword
+                    if (dataIndex > maxIndex) dataIndex -= blocksInformation[0]
                     interleavedBlockData[dataIndex] = blockData[index]
                 }
                 for (index in 0 until codewords.size) {
