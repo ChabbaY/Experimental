@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 
 import cloud.englert.experimental.databinding.FragmentQrBinding
 import cloud.englert.experimental.qrgenerator.QRCodeGenerator
+import cloud.englert.experimental.qrgenerator.Version
 
 class QRFragment : Fragment() {
     private var _binding: FragmentQrBinding? = null
@@ -40,7 +41,7 @@ class QRFragment : Fragment() {
     }
 
     private fun generateCode(value: String) {
-        val bitmap = QRCodeGenerator().generate(value)
+        val bitmap = QRCodeGenerator().generate(value, Version.ErrorCorrection.MEDIUM)
         binding.imageViewQr.setImageBitmap(bitmap)
     }
 }
