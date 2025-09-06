@@ -69,7 +69,7 @@ class SwipeFragment : Fragment() {
                             target: RecyclerView.ViewHolder): Boolean = false
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            val position = viewHolder.adapterPosition
+            val position = viewHolder.bindingAdapterPosition
             when (direction) {
                 ItemTouchHelper.LEFT -> Toast.makeText(requireContext(),
                     "Disliked: ${topics[position]}", Toast.LENGTH_SHORT).show()
