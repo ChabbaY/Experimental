@@ -10,12 +10,12 @@ class Mask(val matrix: Array<IntArray>, val pattern: Int) {
         private val LOG_TAG = Mask::class.java.simpleName
 
         fun apply(matrix: Array<IntArray>, dataModules: Array<IntArray>): Mask {
-            var bestResult = matrix.copyOf()
+            var bestResult = deepCopy(matrix)
             var chosenPattern = 0
             var bestScore = Int.MAX_VALUE
 
             for (pattern in 0 until 8) {
-                val maskedMatrix = matrix.copyOf()
+                val maskedMatrix = deepCopy(matrix)
                 Log.d(LOG_TAG, "applying mask $pattern on matrix")
                 applyMaskPattern(maskedMatrix, dataModules, pattern)
                 val score = evaluateMatrix(maskedMatrix)
@@ -53,6 +53,14 @@ class Mask(val matrix: Array<IntArray>, val pattern: Int) {
 
         private fun mask(matrix: Array<IntArray>, row: Int, column: Int) {
             matrix[row][column] = if (matrix[row][column] == 1) 0 else 1
+        }
+
+        private fun deepCopy(matrix: Array<IntArray>): Array<IntArray> {
+            val result = matrix.copyOf()
+            for ((index, array) in matrix.withIndex()) {
+                result[index] = array.copyOf()
+            }
+            return result
         }
 
         private fun evaluateMatrix(matrix: Array<IntArray>): Int {

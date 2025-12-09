@@ -152,8 +152,7 @@ class QRCodeGenerator() {
                     blocksInformation[2] * blocksInformation[3])
             val interleavedErrorData = IntArray(errorCorrectionCodewords * numBlocks)
             for (block in blocks.withIndex()) {
-                val blockData = block.value
-                if (blockData == null) continue
+                val blockData = block.value ?: continue
                 val codewords = errorCorrection.getErrorCorrectionCodewords(
                     blockData, errorCorrectionCodewords
                 )
