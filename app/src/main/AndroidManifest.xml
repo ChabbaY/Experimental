@@ -12,9 +12,10 @@
     <!-- GPS -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- JSON -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <!-- Notification -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <application
         android:name=".custom.CustomApplication"
         android:allowBackup="true"
@@ -44,5 +45,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <!-- Notification -->
+        <receiver android:name=".notification.NotificationReceiver" android:exported="false" />
     </application>
 </manifest>

@@ -22,7 +22,7 @@ as JSON file
 
 ## Notification
 
-scheduled TODO
+scheduled
 - using AndroidX
 
 ## QR

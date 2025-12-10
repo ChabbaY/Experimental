@@ -1,22 +1,26 @@
 package cloud.englert.experimental.ui.notification
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
-import cloud.englert.experimental.R
 import cloud.englert.experimental.databinding.FragmentNotificationBinding
+import cloud.englert.experimental.notification.NotificationReceiver
 
 class NotificationFragment : Fragment() {
     private var _binding: FragmentNotificationBinding? = null
@@ -30,6 +34,11 @@ class NotificationFragment : Fragment() {
     ): View {
         _binding = FragmentNotificationBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        if (!allPermissionsGranted()) {
+            requestPermissions()
+        }
+
         return root
     }
 
@@ -49,41 +58,72 @@ class NotificationFragment : Fragment() {
         _binding = null
     }
 
-    /**
-     * Create a Notification channel, needs SDK level 26+ or check
-     */
     private fun createNotificationChannel() {
-        val name = "Notification Channel"
-        val description = "A description of the channel."
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-            this.description = description
-        }
-        val notificationManager: NotificationManager = getSystemService(requireContext(),
-            NotificationManager::class.java) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Notification Channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
+        val manager = requireContext().getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(channel)
     }
 
     private fun sendNotification(timestamp: Long) {
-        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .setContentTitle("Important News!")
-            .setContentText("Well, this is a notification")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setWhen(timestamp)
-            .setAutoCancel(true) // disappears on tap
-
-        with(NotificationManagerCompat.from(requireContext())) {
-            if (ActivityCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED) {
-                return@with
-            }
-            notify(System.currentTimeMillis().toInt(), builder.build())
+        if (!allPermissionsGranted()) {
+            Log.d(TAG, "Permission not granted")
+            return
         }
+
+        val intent = Intent(requireContext(), NotificationReceiver::class.java)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            timestamp,
+            pendingIntent
+        )
+
+        Log.d(TAG, "Notification scheduled")
+    }
+
+    private fun requestPermissions() {
+        activityResultLauncher.launch(REQUIRED_PERMISSIONS)
+    }
+
+    private val activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
+        { permissions ->
+            // Handle Permission granted/rejected
+            var permissionGranted = true
+            permissions.entries.forEach {
+                if (it.key in REQUIRED_PERMISSIONS && !it.value)
+                    permissionGranted = false
+            }
+            if (!permissionGranted) {
+                Toast.makeText(requireContext(),
+                    "Permission request denied",
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(
+            requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
     companion object {
-        private const val CHANNEL_ID = "channel_0"
+        private val TAG = NotificationFragment::class.java.simpleName
+        const val CHANNEL_ID = "channel_0"
+        private val REQUIRED_PERMISSIONS = arrayOf(
+            Manifest.permission.POST_NOTIFICATIONS
+        )
     }
 }
