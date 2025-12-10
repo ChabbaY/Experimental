@@ -65,6 +65,7 @@ class JsonFragment : Fragment() {
         }
         binding.buttonGenerate.setOnClickListener {
             generate()
+            updateTextView()
         }
     }
 
@@ -78,16 +79,21 @@ class JsonFragment : Fragment() {
     }
 
     private fun export() {
-        if (isStoragePermissionGranted()) {
-            writeTextToFile(convertClassToJson())
-        }
+        writeTextToFile(convertClassToJson())
     }
 
     private fun generate() {
         val random = Random(System.currentTimeMillis())
-        (0..3).forEach { i ->
+        (0..3).forEach { _ ->
             entities.add(Entity(random.nextInt(100),
                 (System.currentTimeMillis() % 100).toString()))
+        }
+    }
+
+    private fun updateTextView() {
+        binding.textContent.text = ""
+        for (entity in entities) {
+            binding.textContent.append("${entity.name} (${entity.id})\n")
         }
     }
 
@@ -96,20 +102,20 @@ class JsonFragment : Fragment() {
         return gson?.toJson(allData)
     }
 
-    private fun getRandomFileName(): String {
-        return Calendar.getInstance().timeInMillis.toString() + ".json"
+    private fun convertJsonToClass(json: String): Data? {
+        return gson?.fromJson(json, Data::class.java)
     }
 
-    private fun isStoragePermissionGranted(): Boolean {
-        return true // TODO
+    private fun getRandomFileName(): String {
+        return Calendar.getInstance().timeInMillis.toString() + ".json"
     }
 
     private fun writeTextToFile(jsonResponse: String?) {
         if (jsonResponse != null) {
             // create file object
-            val dir = File("") // TODO
+            val dir = File("//storage//emulated//0//Download//")
             val file = File(dir, getRandomFileName())
-            var fos: FileOutputStream? = null
+            var fos: FileOutputStream?
             try {
                 fos = FileOutputStream(file)
                 fos.write(jsonResponse.toByteArray())
@@ -117,13 +123,13 @@ class JsonFragment : Fragment() {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            Toast.makeText(requireContext(), "File saved successfully!",
+            Toast.makeText(requireContext(), "File saved successfully! (${file.absolutePath})",
                 Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun readTextFromUri(uri: Uri): String {
-        var inputStream: InputStream? = null
+        var inputStream: InputStream?
         val stringBuilder = StringBuilder()
         try {
             val contentResolver = requireContext().contentResolver
@@ -145,8 +151,12 @@ class JsonFragment : Fragment() {
         if (result.resultCode == RESULT_OK) {
             val uri = result.data?.data
             val fileContents = readTextFromUri(uri!!)
-            Toast.makeText(requireContext(), fileContents,
-                Toast.LENGTH_SHORT).show()
+            val data = convertJsonToClass(fileContents)
+            if (data != null) {
+                entities.clear()
+                entities.addAll(data.entities)
+                updateTextView()
+            }
         }
     }
 

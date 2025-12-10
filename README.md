@@ -1,41 +1,44 @@
 # Experimental
 
-Icons: https://pictogrammers.com/library/mdi/
+Icons from: https://pictogrammers.com/library/mdi/
 
 ## API
 
-using Retrofit
-
-Random Joke API: https://official-joke-api.appspot.com/random_joke
+- using Retrofit
+- using Random Joke API: https://official-joke-api.appspot.com/random_joke
 
 ## Camera
 
-using CameraX
+- using CameraX
 
 ## GPS
 
-using Google Play Services
-
-## Spotify
-
-via Spotify App Remote SDK
-
-## Swipe
-
-Custom made with RecyclerView & ItemTouchHelper
-
-## Wifi Direct
-
-TODO
+- using Google Play Services
 
 ## Import / Export
 
-as JSON using Gson
+as JSON file
+- using Gson
 
 ## Notification
 
-using AndroidX
+scheduled TODO
+- using AndroidX
 
 ## QR
 
 QR-Code Generator
+
+## Spotify
+
+TODO
+- using Spotify App Remote SDK
+
+## Swipe
+
+Custom made
+- using RecyclerView & ItemTouchHelper
+
+## Wifi Direct
+
+TODO
