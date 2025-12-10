@@ -29,11 +29,6 @@ scheduled
 
 QR-Code Generator
 
-## Spotify
-
-TODO
-- using Spotify App Remote SDK
-
 ## Swipe
 
 Custom made
