@@ -10,18 +10,22 @@ import android.net.wifi.WpsInfo
 import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
 import cloud.englert.experimental.MainActivity
+import cloud.englert.experimental.custom.DeviceListAdapter
 import cloud.englert.experimental.databinding.FragmentWifiDirectBinding
 
 class WifiDirectFragment : Fragment() {
@@ -78,7 +82,12 @@ class WifiDirectFragment : Fragment() {
         receiver = WifiReceiver(activity, manager, channel, peerListListener)
         activity.registerReceiver(receiver, intentFilter)
 
-        discoverPeers()
+        try {
+            discoverPeers()
+        } catch (e: SecurityException) {
+            Log.d(TAG, "Discovery failed: ${e.message}, requesting permissions again")
+            requestPermissions()
+        }
     }
 
     override fun onPause() {
@@ -86,6 +95,7 @@ class WifiDirectFragment : Fragment() {
         activity.unregisterReceiver(receiver)
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES])
     private fun discoverPeers() {
         manager.discoverPeers(channel, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
@@ -104,8 +114,8 @@ class WifiDirectFragment : Fragment() {
         })
     }
 
-    private fun connect() {
-        val device = peers[0]
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES])
+    private fun connect(device: WifiP2pDevice) {
         val config = WifiP2pConfig().apply {
             deviceAddress = device.deviceAddress
             wps.setup = WpsInfo.PBC
@@ -134,6 +144,8 @@ class WifiDirectFragment : Fragment() {
 
             // Perform any updates needed based on the new list of
             // peers connected to the Wi-Fi P2P network.
+            Log.d(TAG, "Found ${peers.size} devices, updating list")
+            updateListView()
         }
 
         if (peers.isEmpty()) {
@@ -159,8 +171,12 @@ class WifiDirectFragment : Fragment() {
                     // Request available peers from the wifi p2p manager. This is an
                     // asynchronous call and the calling activity is notified with a
                     // callback on PeerListListener.onPeersAvailable()
-                    manager.requestPeers(channel, peerListListener)
-                    Log.d(TAG, "P2P peers changed")
+                    try {
+                        manager.requestPeers(channel, peerListListener)
+                        Log.d(TAG, "P2P peers changed")
+                    } catch (e: SecurityException) {
+                        Log.d(TAG, "Requesting peers failed: ${e.message}")
+                    }
                 }
                 WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
                     // Connection state changed! We should probably do something about that.
@@ -170,6 +186,27 @@ class WifiDirectFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun createListView(view: ListView, data: List<WifiP2pDevice>) {
+        val listenersDetails = arrayOfNulls<View.OnClickListener>(data.size)
+        for ((index, device) in data.withIndex()) {
+            listenersDetails[index] = View.OnClickListener { _: View? ->
+                try {
+                    connect(device)
+                } catch (e: SecurityException) {
+                    Log.d(TAG, "Connect failed: ${e.message}, requesting permissions again")
+                    requestPermissions()
+                }
+            }
+        }
+
+        val dataAdapter = DeviceListAdapter(activity, data, listenersDetails)
+        view.adapter = dataAdapter
+    }
+
+    private fun updateListView() {
+        createListView(binding.listViewDevices, peers)
     }
 
     private fun requestPermissions() {
@@ -200,7 +237,9 @@ class WifiDirectFragment : Fragment() {
     companion object {
         private val TAG = WifiDirectFragment::class.java.simpleName
         private val REQUIRED_PERMISSIONS = arrayOf(
-            Manifest.permission.NEARBY_WIFI_DEVICES
-        )
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ).apply { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            this.plus(Manifest.permission.NEARBY_WIFI_DEVICES)
+        } }
     }
 }

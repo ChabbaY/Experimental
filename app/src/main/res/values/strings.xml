@@ -18,6 +18,8 @@
     <string name="menu_wifi_direct">Wifi Direct</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <string name="details">Details</string>
+
     <!-- Preference Titles -->
     <string name="customization_header">Customization</string>
 
@@ -44,7 +46,7 @@
     <string name="location_name">no location retrieved yet</string>
 
     <!-- Wifi Direct -->
-    <string name="wifi_direct_message">not implemented yet</string>
+    <string name="placeholder_device">Device</string>
 
     <!-- Json -->
     <string name="content_placeholder">no content yet</string>

@@ -6,8 +6,14 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="label_width">100dp</dimen>
+    <dimen name="line_height">75dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
 
     <dimen name="icon_menu">24dp</dimen>
     <dimen name="icon_big">60dp</dimen>
+    <dimen name="icon_medium">48dp</dimen>
+
+    <dimen name="text_heading">20sp</dimen>
 </resources>
