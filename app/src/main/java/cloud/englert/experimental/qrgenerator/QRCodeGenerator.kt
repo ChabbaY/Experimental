@@ -72,6 +72,7 @@ class QRCodeGenerator() {
     private fun appendBinaryData(content: String) {
         when(version.mode) {
             Mode.NUMERIC.value -> {
+                Log.d(LOG_TAG, "encoding content numeric")
                 val groups = content.chunked(3)
                 for (group in groups) {
                     val number = group.toInt()
@@ -83,6 +84,7 @@ class QRCodeGenerator() {
                 }
             }
             Mode.ALPHANUMERIC.value -> {
+                Log.d(LOG_TAG, "encoding content alphanumeric")
                 val groups = content.chunked(2)
                 for (group in groups) {
                     when(group.length) {
@@ -99,9 +101,13 @@ class QRCodeGenerator() {
                 }
             }
             Mode.BYTE.value, Mode.ECI.value -> {
-                for (char in content) {
-                    binaryData.append(toBinary(char.code, 8))
+                Log.d(LOG_TAG, "encoding content as bytes")
+                val bytes = content.toByteArray(Charsets.ISO_8859_1)
+                for (byte in bytes) {
+                    val unsignedByte = byte.toInt() and 0xFF
+                    binaryData.append(toBinary(unsignedByte, 8))
                 }
+                Log.d(LOG_TAG, binaryData.toString())
             }
             Mode.KANJI.value -> {
                 // TODO kanji encoding
