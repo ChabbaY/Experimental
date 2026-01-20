@@ -24,7 +24,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -68,6 +69,7 @@ dependencies {
     implementation(files("libs/spotify-auth-release-2.1.0.aar"))
     implementation(libs.gson)
     implementation(libs.mlkit)
+    implementation(libs.ucrop)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)

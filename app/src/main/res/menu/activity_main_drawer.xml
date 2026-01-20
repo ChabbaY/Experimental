@@ -33,6 +33,10 @@
             android:icon="@drawable/ic_menu_swipe"
             android:title="@string/menu_swipe" />
         <item
+            android:id="@+id/nav_text_recognition"
+            android:icon="@drawable/ic_save"
+            android:title="@string/menu_text_recognition" />
+        <item
             android:id="@+id/nav_wifi_direct"
             android:icon="@drawable/ic_menu_wifi_direct"
             android:title="@string/menu_wifi_direct" />
