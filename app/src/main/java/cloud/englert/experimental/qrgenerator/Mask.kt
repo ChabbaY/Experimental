@@ -32,19 +32,33 @@ class Mask(val matrix: Array<IntArray>, val pattern: Int) {
             return Mask(bestResult, chosenPattern)
         }
 
-        private fun applyMaskPattern(matrix: Array<IntArray>, dataModules: Array<IntArray>, mask: Int) {
+        /**
+         * masking the matrix with the given mask pattern where modules is set to 1
+         * @param matrix the matrix
+         * @param modules the data modules to be masked
+         * @param mask the mask pattern [0; 7]
+         */
+        private fun applyMaskPattern(matrix: Array<IntArray>, modules: Array<IntArray>, mask: Int) {
             for (row in 0 until matrix.size) {
                 for (column in 0 until matrix.size) {
-                    if (dataModules[row][column] == 1) {
+                    if (modules[row][column] == 1) {
                         when(mask) {
-                            0 -> if ((row + column) % 2 == 0) mask(matrix, row, column)
-                            1 -> if (row % 2 == 0) mask(matrix, row, column)
-                            2 -> if (column % 3 == 0) mask(matrix, row, column)
-                            3 -> if ((row + column) % 3 == 0) mask(matrix, row, column)
-                            4 -> if (((row / 2) + (column / 2)) % 2 == 0) mask(matrix, row, column)
-                            5 -> if (((row * column) % 2) + ((row * column) % 3) == 0) mask(matrix, row, column)
-                            6 -> if ((((row * column) % 2) + ((row * column) % 3)) % 2 == 0) mask(matrix, row, column)
-                            7 -> if ((((row + column) % 2) + ((row * column) % 3)) % 2 == 0) mask(matrix, row, column)
+                            0 -> if ((row + column) % 2 == 0)
+                                mask(matrix, row, column)
+                            1 -> if (row % 2 == 0)
+                                mask(matrix, row, column)
+                            2 -> if (column % 3 == 0)
+                                mask(matrix, row, column)
+                            3 -> if ((row + column) % 3 == 0)
+                                mask(matrix, row, column)
+                            4 -> if (((row / 2) + (column / 3)) % 2 == 0)
+                                mask(matrix, row, column)
+                            5 -> if (((row * column) % 2) + ((row * column) % 3) == 0)
+                                mask(matrix, row, column)
+                            6 -> if ((((row * column) % 2) + ((row * column) % 3)) % 2 == 0)
+                                mask(matrix, row, column)
+                            7 -> if ((((row + column) % 2) + ((row * column) % 3)) % 2 == 0)
+                                mask(matrix, row, column)
                         }
                     }
                 }

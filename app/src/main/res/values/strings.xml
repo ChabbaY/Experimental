@@ -63,4 +63,9 @@
     <string name="hint_qr">Content of QR Code</string>
     <string name="generate_qr">Generate QR Code</string>
     <string name="qr_code">QR Code</string>
+    <string name="label_error_correction">Error Correction Level:</string>
+    <string name="low">Low</string>
+    <string name="medium">Medium</string>
+    <string name="quartile">Quartile</string>
+    <string name="high">High</string>
 </resources>

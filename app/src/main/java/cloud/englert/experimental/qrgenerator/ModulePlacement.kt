@@ -8,8 +8,8 @@ class ModulePlacement {
         fun placeData(data: String, version: Int): Array<Array<IntArray>> {
             val size = version * 4 + 17
             // matrix[row][column], prefilled with 2 (unallocated)
-            val matrix = Array(size) { it -> IntArray(size) { it -> 2 } }
-            val dataModules = Array(size) { it -> IntArray(size) }
+            val matrix = Array(size) { IntArray(size) { 2 } }
+            val dataModules = Array(size) { IntArray(size) }
 
             // finder patterns
             setFinderPattern(matrix, 3, 3)
@@ -41,7 +41,8 @@ class ModulePlacement {
             return arrayOf(matrix, dataModules)
         }
 
-        fun setFormatAndVersionInformation(matrix: Array<IntArray>, version: Int, errorCorrection: Version.ErrorCorrection, mask: Int) {
+        fun setFormatAndVersionInformation(matrix: Array<IntArray>, version: Int,
+                                           errorCorrection: Version.ErrorCorrection, mask: Int) {
             // format information
             val formatInformation = getFormatInformation(errorCorrection, mask)
             matrix[8][0] = formatInformation[0]
@@ -120,14 +121,14 @@ class ModulePlacement {
                 matrix[row][7] = 0
                 matrix[row][size - 8] = 0
             }
-            for (row in (size - 8) .. (size - 1)) {
+            for (row in (size - 8) ..< size) {
                 matrix[row][7] = 0
             }
             for (column in 0 .. 6) {
                 matrix[7][column] = 0
                 matrix[size - 8][column] = 0
             }
-            for (column in (size - 7) .. (size - 1)) {
+            for (column in (size - 7) ..< size) {
                 matrix[7][column] = 0
             }
         }
@@ -167,10 +168,10 @@ class ModulePlacement {
             for (column in 0 .. 5) {
                 matrix[8][column] = 3
             }
-            for (row in (size - 7) .. (size - 1)) {
+            for (row in (size - 7) ..< size) {
                 matrix[row][8] = 3
             }
-            for (column in (size - 8) .. (size - 1)) {
+            for (column in (size - 8) ..< size) {
                 matrix[8][column] = 3
             }
 
@@ -185,7 +186,8 @@ class ModulePlacement {
             }
         }
 
-        private fun placeDataBits(matrix: Array<IntArray>, data: String, size: Int, dataModules: Array<IntArray>) {
+        private fun placeDataBits(matrix: Array<IntArray>, data: String, size: Int,
+                                  dataModules: Array<IntArray>) {
             val columns = size / 2
             var dataIndex = 0
             for (index in 0 until columns) {
@@ -199,7 +201,7 @@ class ModulePlacement {
                 while ((row > -1) && (row < size)) {
                     for (columnIndex in 0 .. 1) {
                         if (matrix[row][column - columnIndex] == 2) {
-                            if (dataIndex < data.length) { // TODO check why length check necessary
+                            if (dataIndex < data.length) {
                                 matrix[row][column - columnIndex] =
                                     if (data[dataIndex] == '1') 1 else 0
                                 dataIndex++
@@ -235,7 +237,8 @@ class ModulePlacement {
             return result
         }
 
-        private fun getFormatInformation(errorCorrection: Version.ErrorCorrection, mask: Int): IntArray {
+        private fun getFormatInformation(errorCorrection: Version.ErrorCorrection,
+                                         mask: Int): IntArray {
             return FORMAT_INFORMATION[errorCorrection.ordinal][mask].toIntArray()
         }
 

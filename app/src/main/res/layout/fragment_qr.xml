@@ -18,6 +18,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/linear_layout_error_correction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/fab_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText_input">
+        <TextView
+            android:id="@+id/label_error_correction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/fab_margin"
+            android:text="@string/label_error_correction"
+            android:labelFor="@id/spinner_error_correction" />
+        <Spinner
+            android:id="@+id/spinner_error_correction"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:entries="@array/error_correction_entries" />
+    </LinearLayout>
     <Button
         android:id="@+id/button_generate"
         android:layout_width="wrap_content"
@@ -25,7 +47,7 @@
         android:text="@string/generate_qr"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editText_input" />
+        app:layout_constraintTop_toBottomOf="@id/linear_layout_error_correction" />
     <ImageView
         android:id="@+id/imageView_qr"
         android:layout_width="wrap_content"

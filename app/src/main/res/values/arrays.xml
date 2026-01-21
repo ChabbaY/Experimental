@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Themes-->
+    <!-- Themes -->
     <string-array name="themes_entries">
         <item>@string/light_theme_entry</item>
         <item>@string/dark_theme_entry</item>
@@ -10,5 +10,12 @@
         <item>@string/light_theme_value</item>
         <item>@string/dark_theme_value</item>
         <item>@string/system_theme_value</item>
+    </string-array>
+    <!-- Error Correction -->
+    <string-array name="error_correction_entries">
+        <item>@string/low</item>
+        <item>@string/medium</item>
+        <item>@string/quartile</item>
+        <item>@string/high</item>
     </string-array>
 </resources>

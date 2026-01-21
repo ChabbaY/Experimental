@@ -52,13 +52,13 @@ class ErrorCorrection() {
     fun polyDivideRest(poly1: IntArray, poly2: IntArray): IntArray {
         val steps = poly1.size
         var result = poly1.copyOf(poly1.size + poly2.size - 1)
-        for (step in 1..steps) {
+        (1..steps).forEach { _ ->
             val multiplied = polyMultiply(poly2, intArrayOf(result[0]))
             result = result.mapIndexed { index, value ->
                 if (index < multiplied.size) value.xor(multiplied[index])
                 else value
             }.toIntArray()
-            result = result.slice(1..(result.size - 1)).toIntArray()
+            result = result.slice(1..< result.size).toIntArray()
         }
         return result
     }
